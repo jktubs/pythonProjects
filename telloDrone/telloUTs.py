@@ -4,13 +4,21 @@ import os
 
 
 class TestUtilsMethods(unittest.TestCase):
+    def setUp(self):
+        #print("\nsetUp()")
+        dirname = os.path.dirname(__file__)
+        self.img = cv2.imread(os.path.join(dirname, '../openCV/Resources/All-Faces-Down-750.jpg'))
 
-    # def test_upper(self):
-    #     self.assertEqual('foo'.upper(), 'FOO')
+    def tearDown(self):
+        #print("tearDown()")
+        pass
+
+    #def test_upper(self):
+    #    self.assertEqual('foo'.upper(), 'FOO')
     #
-    # def test_isupper(self):
-    #     self.assertTrue('FOO'.isupper())
-    #     self.assertFalse('Foo'.isupper())
+    #def test_isupper(self):
+    #    self.assertTrue('FOO'.isupper())
+    #    self.assertFalse('Foo'.isupper())
     #
     # def test_split(self):
     #     s = 'hello world'
@@ -20,9 +28,7 @@ class TestUtilsMethods(unittest.TestCase):
     #         s.split(2)
 
     def test_findFaces(self):
-        dirname = os.path.dirname(__file__)
-        img = cv2.imread(os.path.join(dirname, '../openCV/Resources/All-Faces-Down-750.jpg'))
-        img, faces, myFaceListC, myFaceListArea = findFaces(img)
+        img, faces, myFaceListC, myFaceListArea = findFaces(self.img)
         #print("\n")
         #for a in myFaceListArea:
         #    print(a)
@@ -36,6 +42,21 @@ class TestUtilsMethods(unittest.TestCase):
         self.assertEqual(6889, myFaceListArea[3])
         self.assertEqual(10404, myFaceListArea[4])
         self.assertEqual(len(faces), 5)
+
+    def test_findBiggestFace(self):
+        img, info = findBiggestFace(self.img)
+        #print(info[0][0])  # x value of center point of the closest face with largest area
+        #print("\n")
+        #print("len info = " + str(len(info)))
+        #print(info)
+        #cv2.imshow("Result", img)
+        #cv2.waitKey(0)
+        #len info = 2
+        #   cx,  cy   area
+        #[[239, 129], 10404]
+        self.assertEqual(info[0][0], 239)
+        self.assertEqual(info[0][1], 129)
+        self.assertEqual(info[1], 10404)
 
 
 if __name__ == '__main__':

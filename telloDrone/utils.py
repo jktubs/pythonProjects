@@ -72,6 +72,12 @@ def findBiggestFace(img):
 
     if len(myFaceListArea) != 0:
         i = myFaceListArea.index(max(myFaceListArea))
+        #print(faces[i])
+        x = faces[i][0]
+        y = faces[i][1]
+        w = faces[i][2]
+        h = faces[i][3]
+        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
         return img, [myFaceListC[i], myFaceListArea[i]]
     else:
         return img, [[0,0],0]
