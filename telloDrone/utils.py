@@ -51,19 +51,6 @@ def findFaces(img):
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
     faces = faceCascade.detectMultiScale(imgGray, 1.2, 4)
 
-    for (x,y,w,h) in faces:
-        cx = x + w//2
-        cy = y + h//2
-        area = w*h
-        cv2.putText(img, str(area), (x - 5, y - 5), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5, (0, 0, 255))
-        cv2.rectangle(img,(x,y), (x+w,y+h), (0,0,255), 2)
-
-    return img, faces
-
-def findBiggestFace(img):
-
-    img, faces = findFaces(img)
-
     #center
     myFaceListC = []
     myFaceListArea = []
@@ -74,6 +61,14 @@ def findBiggestFace(img):
         area = w*h
         myFaceListArea.append(area)
         myFaceListC.append([cx,cy])
+        cv2.putText(img, str(area), (x - 5, y - 5), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5, (0, 0, 255))
+        cv2.rectangle(img,(x,y), (x+w,y+h), (0,0,255), 2)
+
+    return img, faces, myFaceListC, myFaceListArea
+
+def findBiggestFace(img):
+
+    img, faces, myFaceListC, myFaceListArea = findFaces(img)
 
     if len(myFaceListArea) != 0:
         i = myFaceListArea.index(max(myFaceListArea))
