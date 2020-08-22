@@ -1,4 +1,5 @@
 from utils import *
+import utils
 import unittest
 import time
 
@@ -8,8 +9,13 @@ def main():
     w, h = 1024, 768
     pid = [0.5, 0.5, 0]  # kd, kp,ki
     pError = 0
+    # if False then the webcam is used as image feed
+    utils.useDrone = False
 
     myDrone = intializeTello()
+    if utils.useDrone:
+        myDrone.takeoff()
+        time.sleep(3)
 
     while True:
 
@@ -42,7 +48,7 @@ def main():
 
         # WAIT FOR THE 'Q' BUTTON TO STOP
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            terminate()
+            terminate(myDrone)
             break
 
     print("Finished main.")

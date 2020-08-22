@@ -4,13 +4,12 @@ import numpy as np
 import os, sys
 
 #https://www.murtazahassan.com/drone-face-tracking-pid-using-opencv-p-1/
-
-#if False then the webcam is used as image feed
-useDrone = False
 #cap = cv2.VideoCapture(0)
 #solves warning but might slow down the framerate
 #but seems not to be the case for me (compared frame rate measurement in main() )
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) # ==> https://stackoverflow.com/questions/53888878/cv2-warn0-terminating-async-callback-when-attempting-to-take-a-picture
+useDrone = False
+areaThreshold = 0
 
 def intializeTello():
     # CONNECT TO TELLO
@@ -77,8 +76,11 @@ def findBiggestFace(img):
         y = faces[i][1]
         w = faces[i][2]
         h = faces[i][3]
-        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-        return img, [myFaceListC[i], myFaceListArea[i]]
+        if myFaceListArea[i] > areaThreshold:
+            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            return img, [myFaceListC[i], myFaceListArea[i]]
+        else:
+            return img, [[0, 0], 0]
     else:
         return img, [[0,0],0]
 
@@ -92,7 +94,7 @@ def trackFace(myDrone,info,w,pid,pError):
 
     if useDrone:
         if info[0][0] !=0:
-            myDrone.yaw_velocity = speed
+            myDrone.yaw_velocity = int(speed)
         else:
             myDrone.for_back_velocity = 0
             myDrone.left_right_velocity = 0
@@ -108,7 +110,7 @@ def trackFace(myDrone,info,w,pid,pError):
 
     return error
 
-def terminate():
+def terminate(myDrone):
     print('Terminate')
     if useDrone:
         myDrone.land()
